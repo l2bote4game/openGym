@@ -43,9 +43,21 @@ const SECURE = /^https:/i.test(ORIGIN) ? ' Secure;' : '';
 
 fs.mkdirSync(DATA, { recursive: true });
 
+function getRandomHex(bytes) {
+  const arr = new Uint8Array(bytes);
+  crypto.webcrypto.getRandomValues(arr);
+  return Buffer.from(arr).toString('hex');
+}
+
+function getRandomB64Url(bytes) {
+  const arr = new Uint8Array(bytes);
+  crypto.webcrypto.getRandomValues(arr);
+  return Buffer.from(arr).toString('base64url');
+}
+
 /* ---------- secret + db ---------- */
 const secretFile = path.join(DATA, 'secret');
-if (!fs.existsSync(secretFile)) fs.writeFileSync(secretFile, crypto.randomBytes(32).toString('hex'), { mode: 0o600 });
+if (!fs.existsSync(secretFile)) fs.writeFileSync(secretFile, getRandomHex(32), { mode: 0o600 });
 const SECRET = fs.readFileSync(secretFile, 'utf8').trim();
 
 const dbFile = path.join(DATA, 'db.json');
@@ -284,7 +296,7 @@ const routes = {
     const code = String(body.code || '').trim().toUpperCase();
     if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked))
       return json(res, 403, { error: 'a valid invite code is required' });
-    const uid = crypto.randomBytes(12).toString('base64url');
+    const uid = getRandomB64Url(12);
     const options = await generateRegistrationOptions({
       rpName: RP_NAME, rpID: getReqRpId(req),
       userID: Buffer.from(uid), userName: name, userDisplayName: name,
@@ -535,7 +547,7 @@ const routes = {
     // (that's the reverse proxy's job) and /api/register/options tells a caller whether a code is
     // good, so the code itself has to be the thing that isn't worth guessing. Codes already in
     // db.json keep working — validation is an exact string compare, never a length or format check.
-    do { code = crypto.randomBytes(8).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
+    do { code = getRandomHex(8).toUpperCase(); } while (db.invites.some(i => i.code === code));
     const invite = { code, note: String(body.note || '').slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
     saveDb();
