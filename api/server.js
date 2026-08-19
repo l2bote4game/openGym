@@ -40,9 +40,7 @@ const INVITE_ONLY = /^(1|true|yes|on)$/i.test(process.env.INVITE_ONLY || '');
 const SESSION_DAYS = Math.max(1, +(process.env.SESSION_DAYS || 90) || 90);
 const MAX_BODY = 5 * 1024 * 1024;
 // Secure cookies require HTTPS; over plain http://localhost the flag would drop the cookie
-const SECURE = /^https:/i.test(ORIGIN) ? ' Secure;' : '';
-
-fs.mkdirSync(DATA, { recursive: true });
+const SECURE = ' Secure;';
 
 function getRandomHex(bytes) {
   const arr = new Uint8Array(bytes);
