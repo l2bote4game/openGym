@@ -631,10 +631,12 @@ const requestHandler = async (req, res) => {
 
 PORTS.forEach(port => {
   try {
-    http.createServer(requestHandler).listen(port, '0.0.0.0', () => {
+    const srv = http.createServer(requestHandler);
+    srv.on('error', err => console.log(`Port ${port} bind skipped: ${err.message}`));
+    srv.listen(port, '0.0.0.0', () => {
       console.log(`openGym server listening on 0.0.0.0:${port}`);
     });
   } catch (e) {
-    console.error(`Could not bind to port ${port}:`, e);
+    console.error(`Could not bind to port ${port}:`, e.message);
   }
 });
