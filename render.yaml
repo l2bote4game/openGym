@@ -4,9 +4,11 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    healthCheckPath: /api/health
     envVars:
+      - key: PORT
+        value: "10000"
       - key: DATA_DIR
         value: /tmp/data
       - key: RP_NAME
         value: openGym
-

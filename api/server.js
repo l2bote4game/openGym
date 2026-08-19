@@ -279,9 +279,8 @@ setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt 
 
 /* ---------- routes ---------- */
 const routes = {
-  'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
-
-  // Public config the login screen needs before anyone is signed in.
+  'GET /health': async (req, res) => json(res, 200, { ok: true, name: RP_NAME }),
+  'GET /api/health': async (req, res) => json(res, 200, { ok: true, name: RP_NAME }),
   'GET /api/config': async (req, res) => json(res, 200, { invite_only: INVITE_ONLY }),
 
   'GET /api/me': async (req, res) => {
