@@ -12,8 +12,9 @@ RUN cd frontend && npx cross-env VITE_IMG_BASE=https://cdn.jsdelivr.net/gh/hasan
 COPY api/ ./api/
 RUN cd api && npm install
 
-EXPOSE 3000 8080 10000
+EXPOSE 10000
 
+ENV PORT=10000
 ENV PUBLIC_DIR=/app/frontend/dist
 ENV DATA_DIR=/tmp/data
 
