@@ -554,14 +554,61 @@ const routes = {
   }
 };
 
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PUBLIC_DIR = process.env.PUBLIC_DIR || path.join(__dirname, '../frontend/dist');
+
+const MIME_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.webp': 'image/webp',
+  '.woff2': 'font/woff2'
+};
+
+function serveStatic(req, res, pathname) {
+  let filePath = path.join(PUBLIC_DIR, pathname);
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(PUBLIC_DIR, 'index.html');
+  }
+  if (!fs.existsSync(filePath)) {
+    return json(res, 404, { error: 'static file not found' });
+  }
+  const ext = path.extname(filePath).toLowerCase();
+  const mime = MIME_TYPES[ext] || 'application/octet-stream';
+  try {
+    const data = fs.readFileSync(filePath);
+    res.writeHead(200, {
+      'Content-Type': mime,
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable'
+    });
+    res.end(data);
+  } catch (err) {
+    json(res, 500, { error: 'static serve error' });
+  }
+}
+
 http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
   const handler = routes[key];
-  if (!handler) return json(res, 404, { error: 'not found' });
-  try { await handler(req, res); }
-  catch (e) {
-    console.error(key, e);
-    if (!res.headersSent) json(res, 500, { error: 'server error' });
+  if (handler) {
+    try { await handler(req, res); }
+    catch (e) {
+      console.error(key, e);
+      if (!res.headersSent) json(res, 500, { error: 'server error: ' + (e.message || e) });
+    }
+  } else if (req.method === 'GET' || req.method === 'HEAD') {
+    serveStatic(req, res, url.pathname);
+  } else {
+    json(res, 404, { error: 'not found' });
   }
-}).listen(PORT, () => console.log(`gym-api on :${PORT} (rpID=${RP_ID}, origin=${ORIGIN})`));
+}).listen(PORT, '0.0.0.0', () => console.log(`openGym unified server listening on 0.0.0.0:${PORT}`));
