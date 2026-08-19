@@ -2,7 +2,7 @@ services:
   - type: web
     name: opengym
     env: node
-    buildCommand: cd frontend && npm install && npx cross-env VITE_IMG_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/images/ VITE_GIF_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/ npm run build && cd ../api && npm install
+    buildCommand: cd frontend && npm install && npm run build:mobile && cd ../api && npm install
     startCommand: node api/server.js
     healthCheckPath: /api/health
     envVars:
