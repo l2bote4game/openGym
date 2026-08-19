@@ -609,9 +609,6 @@ function serveStatic(req, res, pathname) {
   }
 }
 
-const PRIMARY_PORT = +(process.env.PORT || 80);
-const PORTS = Array.from(new Set([PRIMARY_PORT, 80, 10000, 3000]));
-
 const requestHandler = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
@@ -629,14 +626,8 @@ const requestHandler = async (req, res) => {
   }
 };
 
-PORTS.forEach(port => {
-  try {
-    const srv = http.createServer(requestHandler);
-    srv.on('error', err => console.log(`Port ${port} bind skipped: ${err.message}`));
-    srv.listen(port, '0.0.0.0', () => {
-      console.log(`openGym server listening on 0.0.0.0:${port}`);
-    });
-  } catch (e) {
-    console.error(`Could not bind to port ${port}:`, e.message);
-  }
+const srv = http.createServer(requestHandler);
+srv.on('error', err => console.error('Server bind error:', err));
+srv.listen(PORT, '0.0.0.0', () => {
+  console.log(`openGym server listening on 0.0.0.0:${PORT}`);
 });

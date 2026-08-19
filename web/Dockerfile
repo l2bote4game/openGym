@@ -10,9 +10,9 @@ RUN cd /app/api && npm install --omit=dev
 
 WORKDIR /app/api
 
-EXPOSE 80 3000 8080 10000
+EXPOSE 10000
 
-ENV PORT=80
+ENV PORT=10000
 ENV PUBLIC_DIR=/app/frontend/dist
 ENV DATA_DIR=/tmp/data
 
