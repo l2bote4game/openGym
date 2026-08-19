@@ -1,13 +1,9 @@
 #!/bin/sh
 set -e
 
-export PORT=3000
-export DATA_DIR=/tmp/data
+export DATA_DIR="${DATA_DIR:-/tmp/data}"
+mkdir -p "$DATA_DIR"
 
-echo "=== Starting openGym Node API (port 3000) ==="
-(cd /app/api && node server.js) > /tmp/node-api.log 2>&1 &
-
-sleep 2
-
-echo "=== Starting Nginx Web Server ==="
-exec nginx -g "daemon off;"
+echo "=== Starting openGym Unified Server on Port ${PORT:-10000} ==="
+cd /app/api
+exec node server.js
