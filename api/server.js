@@ -10,6 +10,9 @@ import {
 } from '@simplewebauthn/server';
 import webpush from 'web-push';
 
+process.on('uncaughtException', err => console.error('UNCAUGHT EXCEPTION:', err));
+process.on('unhandledRejection', reason => console.error('UNHANDLED REJECTION:', reason));
+
 const PORT = +(process.env.PORT || 10000);
 const DATA = process.env.DATA_DIR || '/tmp/data';
 try { fs.mkdirSync(DATA, { recursive: true }); } catch (e) { console.error('DATA_DIR error:', e); }
