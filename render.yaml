@@ -6,6 +6,7 @@ services:
     dockerContext: .
     envVars:
       - key: DATA_DIR
-        value: /var/data
+        value: /tmp/data
       - key: RP_NAME
         value: openGym
+
