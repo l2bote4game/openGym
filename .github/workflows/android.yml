@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies & build frontend
         run: |
           cd frontend
-          npm ci
+          npm install
           npm run build:mobile
 
       - name: Build Android APK with Gradle
