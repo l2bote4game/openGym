@@ -609,7 +609,10 @@ function serveStatic(req, res, pathname) {
   }
 }
 
-http.createServer(async (req, res) => {
+const PRIMARY_PORT = +(process.env.PORT || 10000);
+const PORTS = Array.from(new Set([PRIMARY_PORT, 3000, 8080, 10000]));
+
+const requestHandler = async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
   const handler = routes[key];
@@ -624,4 +627,14 @@ http.createServer(async (req, res) => {
   } else {
     json(res, 404, { error: 'not found' });
   }
-}).listen(PORT, '0.0.0.0', () => console.log(`openGym unified server listening on 0.0.0.0:${PORT}`));
+};
+
+PORTS.forEach(port => {
+  try {
+    http.createServer(requestHandler).listen(port, '0.0.0.0', () => {
+      console.log(`openGym server listening on 0.0.0.0:${port}`);
+    });
+  } catch (e) {
+    console.error(`Could not bind to port ${port}:`, e);
+  }
+});
