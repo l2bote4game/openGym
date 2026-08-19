@@ -19,14 +19,9 @@ WORKDIR /app
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 COPY --from=build /app/api /app/api
 COPY web/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Auto-start Node API on port 3000 via Nginx entrypoint hook
-RUN mkdir -p /docker-entrypoint.d && \
-    echo '#!/bin/sh' > /docker-entrypoint.d/99-start-node.sh && \
-    echo 'export PORT=3000' >> /docker-entrypoint.d/99-start-node.sh && \
-    echo 'export DATA_DIR=/tmp/data' >> /docker-entrypoint.d/99-start-node.sh && \
-    echo 'echo "Starting background Node.js API on port 3000..."' >> /docker-entrypoint.d/99-start-node.sh && \
-    echo 'node /app/api/server.js > /tmp/node-api.log 2>&1 &' >> /docker-entrypoint.d/99-start-node.sh && \
-    chmod +x /docker-entrypoint.d/99-start-node.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80 10000 3000
+
+ENTRYPOINT ["/entrypoint.sh"]
