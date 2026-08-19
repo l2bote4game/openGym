@@ -1,0 +1,13 @@
+# Node & Build artifacts
+node_modules/
+dist/
+build/
+.DS_Store
+*.apk
+
+# Android build outputs
+frontend/android/app/build/
+frontend/android/.gradle/
+frontend/android/build/
+frontend/android/capacitor-cordova-android-plugins/build/
+frontend/android/capacitor-cordova-android-plugins/.gradle/
