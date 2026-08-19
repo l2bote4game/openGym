@@ -609,8 +609,8 @@ function serveStatic(req, res, pathname) {
   }
 }
 
-const PRIMARY_PORT = +(process.env.PORT || 10000);
-const PORTS = Array.from(new Set([PRIMARY_PORT, 80, 3000, 8080, 10000]));
+const PRIMARY_PORT = +(process.env.PORT || 80);
+const PORTS = Array.from(new Set([PRIMARY_PORT, 80, 10000, 3000]));
 
 const requestHandler = async (req, res) => {
   const url = new URL(req.url, 'http://x');

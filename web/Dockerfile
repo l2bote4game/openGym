@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -14,9 +14,9 @@ RUN cd api && npm install
 
 WORKDIR /app/api
 
-EXPOSE 10000 3000 8080
+EXPOSE 80
 
-ENV PORT=10000
+ENV PORT=80
 ENV PUBLIC_DIR=/app/frontend/dist
 ENV DATA_DIR=/tmp/data
 
