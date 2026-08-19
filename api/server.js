@@ -11,7 +11,8 @@ import {
 import webpush from 'web-push';
 
 const PORT = +(process.env.PORT || process.env.API_PORT || 3000);
-const DATA = process.env.DATA_DIR || '/data';
+const DATA = process.env.DATA_DIR || '/tmp/data';
+try { fs.mkdirSync(DATA, { recursive: true }); } catch (e) { console.error('DATA_DIR error:', e); }
 const RP_ID_ENV = process.env.RP_ID;
 const ORIGIN_ENV = process.env.ORIGIN;
 const RP_NAME = process.env.RP_NAME || 'openGym';
