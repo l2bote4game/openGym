@@ -14,7 +14,7 @@ RUN cd api && npm install
 
 WORKDIR /app/api
 
-EXPOSE 10000 3000 8080
+EXPOSE 80 3000 8080 10000
 
 ENV PORT=10000
 ENV PUBLIC_DIR=/app/frontend/dist
